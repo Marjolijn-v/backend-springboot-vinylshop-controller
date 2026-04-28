@@ -2,11 +2,11 @@ package nl.novi.backendspringbootvinylshopcontroller.Controllers;
 
 import nl.novi.backendspringbootvinylshopcontroller.Entities.Genre;
 import nl.novi.backendspringbootvinylshopcontroller.Services.GenreService;
-import org.springframework.beans.factory.annotation.Autowired;
+import nl.novi.backendspringbootvinylshopcontroller.helpers.UrlHelper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -14,80 +14,46 @@ import java.util.List;
 
 public class GenreController {
 
-    private final ArrayList<Genre> genreRepository;
+    private final GenreService genreService;
+    private final UrlHelper urlHelper;
 
-    public GenreService() {
-        genreRepository = new ArrayList<>();
-    }
-
-    @Autowired
-    public GenreController(GenreService genreService, ArrayList<Genre> genreRepository) {
-        this.genreRepository = genreRepository;
+    public GenreController(GenreService genreService, UrlHelper urlHelper) {
         this.genreService = genreService;
+        this.urlHelper = urlHelper;
     }
 
-    @GetMapping("/genreList/{id}")
-    public ResponseEntity<Genre> findGenreById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Genre> getGenreById(@PathVariable Long id) {
         Genre genre = genreService.findGenreById(id);
 
-        if (genre == null) {
-            return genreRepository.stream().filter(g -> g.getId().equals(id)).findFirst().orElseThrow(()->new IndexOutOfBoundsException("Genre met ID " + id + " niet gevonden"));
-        }
-        return ResponseEntity.ok(genre);
+        return new ResponseEntity<>(genre, HttpStatus.OK);
     }
 
-    private Genre getGenreById(Long id) {
-        for (Genre genre : genreRepository) {
-            if (genre.getId().equals(id)) {
-                return genre;
-            }
-        }
-        return null;
+
+    @GetMapping
+    public ResponseEntity<List<Genre>> getAllGenres() {
+
+        return ResponseEntity.ok(genreService.findAllGenres());
     }
 
-    @GetMapping("/genreList")
-    public ResponseEntity<List<Genre>> findAllGenres() {
-        return ResponseEntity.ok(genreRepository);
-    }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Genre> createGenre (@RequestBody Genre genreInput) {
 
-    @PostMapping("/genreList")
-    public ResponseEntity<Genre> createGenre (@RequestParam Genre genre) {
-        genre.setId(findNextId(genreRepository));
-        genreRepository.add(genre);
-        return ResponseEntity.ok().body(genre);
+        Genre newGenre = genreService.createGenre(genreInput);
+        return ResponseEntity.created(urlHelper.getCurrentUrlWithId(newGenre.getId())).body(newGenre);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Genre> updateGenre (@RequestParam Long id, Genre genreInput) {
-        Genre existingGenreEntity = findGenreById(id).getBody();
-
-        existingGenreEntity.setName(genreInput.getName());
-        existingGenreEntity.setDescription(genreInput.getDescription());
-        return ResponseEntity.ok().body(genreInput);
+    public ResponseEntity<Genre> updateGenre (@PathVariable Long id, @RequestBody Genre genreInput) {
+        Genre updatedGenre = genreService.updateGenre(id, genreInput);
+        return ResponseEntity.ok().body(updatedGenre);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteGenre(@RequestParam Long id) {
-        try{
-            Genre existingGenreEntity = findGenreById(id).getBody();
-            genreRepository.remove(existingGenreEntity);
-        } catch (IndexOutOfBoundsException _) {
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGenre(@PathVariable Long id) {
+        genreService.deleteGenre(id);
     }
-
-    private Long findNextId(ArrayList<Genre> genreRepository) {
-        Long highest = 0L;
-        if(!genreRepository.isEmpty()){
-            for(Genre genre : genreRepository){
-                if(genre.getId() > highest){
-                    highest = genre.getId();
-                }
-            }
-        }
-        return highest+1;
-    }
-
-
-
 }
