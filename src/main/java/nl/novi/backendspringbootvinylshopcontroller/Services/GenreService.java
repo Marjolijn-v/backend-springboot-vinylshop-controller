@@ -1,103 +1,57 @@
 package nl.novi.backendspringbootvinylshopcontroller.Services;
 
-import nl.novi.vinylshop.entities.Genre;
+import nl.novi.backendspringbootvinylshopcontroller.Entities.Genre;
+import nl.novi.backendspringbootvinylshopcontroller.Entities.GenreEntity;
+import nl.novi.backendspringbootvinylshopcontroller.Repositories.GenreRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Deze GenreService is een tijdelijke oplossing om een echte GenreService na te bootsen.
- * In de volgende les zul je deze GenreService moeten aanpassen of een nieuwe GenreService maken,
- * zodat het gebruik maakt van een database in plaats van een ArrayList.
- * De beschikbare methodes in deze Service zijn:
- * - findAllGenres
- * - findGenreById
- * - createGenre
- * - updateGenre
- * - deleteGenre
- */
 @Service
 public class GenreService {
 
+    private final GenreRepository genreRepository;
 
-    private final ArrayList<Genre> genreRepository;
-
-    public GenreService() {
-        genreRepository = new ArrayList<>();
+    public GenreService(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
     }
 
-    /**
-     * Haalt alle record uit de mock-database op.
-     * Als de mock-database leeg is, wordt een lege lijst gertourneerd.
-     * @return
-     */
-    public List<Genre> findAllGenres() {
-        return genreRepository;
+    public List<GenreEntity> findAllGenres() {
+        return genreRepository.findAll();
     }
 
-    /**
-     * Haalt een bestaande Genre-record op uit de mock-database op basis van het id.
-     * Als er geen record bestaat met dat id, wordt een Exception opgegooid.
-     * @param id
-     * @return
-     */
-    public Genre findGenreById(Long id) {
-        return genreRepository.stream().filter(g -> g.getId().equals(id)).findFirst().orElseThrow(()->new IndexOutOfBoundsException("Genre met ID " + id + " niet gevonden"));
+    public GenreEntity findGenreById(Long id) {
+        getGenreById(id);
     }
 
-    /**
-     * Slaat een nieuw Genre-record op in de mock-database en maakt daarbij een uniek ID aan voor het object.
-     * @param genre Het te creëren en op te slaan genre. Moet niet `null` zijn.
-     * @return Het opgeslagen Genre-object met het toegekende id.
-     */
-    public Genre createGenre(Genre genre) {
-        genre.setId(findNextId(genreRepository));
-        genreRepository.add(genre);
-        return genre;
-
+    public GenreEntity createGenre(GenreEntity input) {
+        return genreRepository.save(input);
     }
 
-    /**
-     * Update een bestaande Genre-record uit de mock-database op basis van het id.
-     * @param id
-     * @param genreInput
-     * @return
-     */
-    public Genre updateGenre(Long id, Genre genreInput){
-        Genre existingGenreEntity = findGenreById(id);
+    public GenreEntity updateGenre(Long id, GenreEntity input) {
+        GenreEntity oldGenre = genreRepository.findById(id).orElse(null);
+        if(oldGenre == null){
+            return null;
+        }
 
-        existingGenreEntity.setName(genreInput.getName());
-        existingGenreEntity.setDescription(genreInput.getDescription());
+        oldGenre.setName(input.getName());
+        oldGenre.setDescription(input.getDescription());
+        return genreRepository.save(oldGenre);
     }
 
-    /**
-     * Verwijderd een Genre uit de mock-database op basis van het id
-     * @param id
-     */
-    public void deleteGenre(Long id) {
-        try{
-        Genre existingGenreEntity = findGenreById(id);
-        genreRepository.remove(existingGenreEntity);
-        } catch (IndexOutOfBoundsException _) {
+    public void deleteGenre(Long id){
+        if(genreRepository.existsById(id)){
+            genreRepository.deleteById(id);
+        } else {
+            IO.println("Genre met id " + id + " kan niet verwijderd worden.");
         }
 
     }
 
-    /**
-     * Een database maakt automatisch de volgende, unieke Primary Key voor je.
-     * Deze helper-methode bootst die functionaliteit na in de ArrayList.
-     */
-    private Long findNextId(ArrayList<Genre> genreRepository) {
-        Long highest = 0L;
-        if(!genreRepository.isEmpty()){
-            for(Genre genre : genreRepository){
-                if(genre.getId() > highest){
-                    highest = genre.getId();
-                }
-            }
-        }
-        return highest+1;
+    private GenreEntity getGenreById(Long id) {
+        Optional<GenreEntity> optionalGenreEntity = genreRepository.findById(id);
+        return optionalGenreEntity.orElse(null);
     }
-
 }

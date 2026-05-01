@@ -1,6 +1,7 @@
 package nl.novi.backendspringbootvinylshopcontroller.Controllers;
 
 import nl.novi.backendspringbootvinylshopcontroller.Entities.Genre;
+import nl.novi.backendspringbootvinylshopcontroller.Entities.GenreEntity;
 import nl.novi.backendspringbootvinylshopcontroller.Services.GenreService;
 import nl.novi.backendspringbootvinylshopcontroller.helpers.UrlHelper;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Genre> getGenreById(@PathVariable Long id) {
-        Genre genre = genreService.findGenreById(id);
+        GenreEntity genre = genreService.findGenreById(id);
 
         return new ResponseEntity<>(genre, HttpStatus.OK);
     }
