@@ -13,7 +13,7 @@ public class PublisherEntity extends BaseEntity{
     @Column(name = "address")
     private String address;
 
-    @Column(name = "contactDetails")
+    @Column(name = "contact_details")
     private String contactDetails;
 
     public String getName() {

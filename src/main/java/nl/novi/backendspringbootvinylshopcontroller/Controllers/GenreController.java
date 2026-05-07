@@ -1,6 +1,5 @@
 package nl.novi.backendspringbootvinylshopcontroller.Controllers;
 
-import nl.novi.backendspringbootvinylshopcontroller.Entities.Genre;
 import nl.novi.backendspringbootvinylshopcontroller.Entities.GenreEntity;
 import nl.novi.backendspringbootvinylshopcontroller.Services.GenreService;
 import nl.novi.backendspringbootvinylshopcontroller.helpers.UrlHelper;
@@ -24,31 +23,31 @@ public class GenreController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Genre> getGenreById(@PathVariable Long id) {
-        GenreEntity genre = genreService.findGenreById(id);
+    public ResponseEntity<GenreEntity> findGenreById(@PathVariable Long id) {
+        GenreEntity genreEntity = genreService.findGenreById(id);
 
-        return new ResponseEntity<>(genre, HttpStatus.OK);
+        return new ResponseEntity<>(genreEntity, HttpStatus.OK);
     }
 
 
     @GetMapping
-    public ResponseEntity<List<Genre>> getAllGenres() {
+    public ResponseEntity<List<GenreEntity>> findAllGenres() {
 
         return ResponseEntity.ok(genreService.findAllGenres());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Genre> createGenre (@RequestBody Genre genreInput) {
+    public ResponseEntity<GenreEntity> createGenre (@RequestBody GenreEntity genreInput) {
 
-        Genre newGenre = genreService.createGenre(genreInput);
+        GenreEntity newGenre = genreService.createGenre(genreInput);
         return ResponseEntity.created(urlHelper.getCurrentUrlWithId(newGenre.getId())).body(newGenre);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Genre> updateGenre (@PathVariable Long id, @RequestBody Genre genreInput) {
-        Genre updatedGenre = genreService.updateGenre(id, genreInput);
+    public ResponseEntity<GenreEntity> updateGenre (@PathVariable Long id, @RequestBody GenreEntity genreInput) {
+        GenreEntity updatedGenre = genreService.updateGenre(id, genreInput);
         return ResponseEntity.ok().body(updatedGenre);
     }
 

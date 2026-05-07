@@ -23,7 +23,7 @@ public class GenreService {
     }
 
     public GenreEntity findGenreById(Long id) {
-        getGenreById(id);
+       return getGenreById(id);
     }
 
     public GenreEntity createGenre(GenreEntity input) {
