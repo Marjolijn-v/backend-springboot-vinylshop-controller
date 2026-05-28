@@ -23,7 +23,7 @@ public class GenreController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GenreEntity> findGenreById(@PathVariable Long id) {
+    public ResponseEntity<GenreEntity> getGenreById(@PathVariable Long id) {
         GenreEntity genreEntity = genreService.findGenreById(id);
 
         return new ResponseEntity<>(genreEntity, HttpStatus.OK);
@@ -31,7 +31,7 @@ public class GenreController {
 
 
     @GetMapping
-    public ResponseEntity<List<GenreEntity>> findAllGenres() {
+    public ResponseEntity<List<GenreEntity>> getAllGenres() {
 
         return ResponseEntity.ok(genreService.findAllGenres());
     }

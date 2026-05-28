@@ -20,10 +20,7 @@ public class PublisherService {
         return publisherRepository.findAll();
     }
 
-    private PublisherEntity getPublisherById(Long id) {
-        Optional<PublisherEntity> optionalPublisherEntity = publisherRepository.findById(id);
-        return optionalPublisherEntity.orElse(null);
-    }
+
 
     public PublisherEntity findPublisherById(Long id){
         return getPublisherById(id);
@@ -51,5 +48,10 @@ public class PublisherService {
         } else {
             IO.println("Publisher met id " + id + " kan niet verwijderd worden.");
         }
+    }
+
+    private PublisherEntity getPublisherById(Long id) {
+        Optional<PublisherEntity> optionalPublisherEntity = publisherRepository.findById(id);
+        return optionalPublisherEntity.orElse(null);
     }
 }

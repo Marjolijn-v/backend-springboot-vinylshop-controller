@@ -52,6 +52,10 @@ public class GenreService {
 
     private GenreEntity getGenreById(Long id) {
         Optional<GenreEntity> optionalGenreEntity = genreRepository.findById(id);
-        return optionalGenreEntity.orElse(null);
+        if(optionalGenreEntity.isPresent()){
+            return optionalGenreEntity.get();
+        } else {
+            return null;
+        }
     }
 }
