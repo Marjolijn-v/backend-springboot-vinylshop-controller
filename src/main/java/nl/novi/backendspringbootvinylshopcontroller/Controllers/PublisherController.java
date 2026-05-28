@@ -1,7 +1,10 @@
 package nl.novi.backendspringbootvinylshopcontroller.Controllers;
 
+import jakarta.validation.Valid;
 import nl.novi.backendspringbootvinylshopcontroller.Entities.PublisherEntity;
 import nl.novi.backendspringbootvinylshopcontroller.Services.PublisherService;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.publisher.PublisherRequestDto;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.publisher.PublisherResponseDto;
 import nl.novi.backendspringbootvinylshopcontroller.helpers.UrlHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,30 +26,32 @@ public class PublisherController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PublisherEntity> findPublisherById(@PathVariable Long id) {
-        PublisherEntity publisherEntity = publisherService.findPublisherById(id);
+    public ResponseEntity<PublisherResponseDto> findPublisherById(@PathVariable Long id) {
+        PublisherResponseDto publisher = publisherService.findPublisherById(id);
 
-        return new ResponseEntity<>(publisherEntity, HttpStatus.OK);
+        return new ResponseEntity<>(publisher, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<PublisherEntity>> findAllPublishers(){
-        return ResponseEntity.ok(publisherService.findAllPublishers());
+    public ResponseEntity<List<PublisherResponseDto>> findAllPublishers(){
+        List<PublisherResponseDto> allPublishers = publisherService.findAllPublishers();
+
+        return new ResponseEntity<>(allPublishers, HttpStatus.OK);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PublisherEntity> createPublisher (@RequestBody PublisherEntity publisherInput) {
+    public ResponseEntity<PublisherResponseDto> createPublisher (@RequestBody @Valid PublisherRequestDto publisherDto) {
 
-        PublisherEntity newPublisher = publisherService.createPublisher(publisherInput);
+        PublisherResponseDto newPublisher = publisherService.createPublisher(publisherDto);
         return ResponseEntity.created(urlHelper.getCurrentUrlWithId(newPublisher.getId())).body(newPublisher);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PublisherEntity> updatePublisher (@PathVariable Long id, @RequestBody PublisherEntity publisherInput) {
-        PublisherEntity updatedPublisher = publisherService.updatePublisher(id, publisherInput);
-        return ResponseEntity.ok().body(updatedPublisher);
+    public ResponseEntity<PublisherResponseDto> updatePublisher (@PathVariable Long id, @RequestBody @Valid PublisherRequestDto publisherDto) {
+        PublisherResponseDto updatedPublisher = publisherService.updatePublisher(id, publisherDto);
+        return new ResponseEntity<>(updatedPublisher, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

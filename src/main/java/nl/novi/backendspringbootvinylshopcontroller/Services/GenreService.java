@@ -1,11 +1,15 @@
 package nl.novi.backendspringbootvinylshopcontroller.Services;
 
-import nl.novi.backendspringbootvinylshopcontroller.Entities.Genre;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import nl.novi.backendspringbootvinylshopcontroller.Entities.GenreEntity;
 import nl.novi.backendspringbootvinylshopcontroller.Repositories.GenreRepository;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.genre.GenreRequestDto;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.genre.GenreResponseDto;
+import nl.novi.backendspringbootvinylshopcontroller.exceptions.RecordNotFoundException;
+import nl.novi.backendspringbootvinylshopcontroller.mappers.GenreDtoMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,32 +17,41 @@ import java.util.Optional;
 public class GenreService {
 
     private final GenreRepository genreRepository;
+    private final GenreDtoMapper genreDtoMapper;
 
-    public GenreService(GenreRepository genreRepository) {
+
+    public GenreService(GenreRepository genreRepository, GenreDtoMapper genreDtoMapper) {
         this.genreRepository = genreRepository;
+        this.genreDtoMapper = genreDtoMapper;
     }
 
-    public List<GenreEntity> findAllGenres() {
-        return genreRepository.findAll();
+    public List<GenreResponseDto> findAllGenres() {
+        return genreDtoMapper.mapToDto(genreRepository.findAll());
+
     }
 
-    public GenreEntity findGenreById(Long id) {
-       return getGenreById(id);
+    public GenreResponseDto findGenreById(Long id) {
+       GenreEntity genreEntity = genreRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Genre not found"));
+
+        return genreDtoMapper.mapToDto(genreEntity);
     }
 
-    public GenreEntity createGenre(GenreEntity input) {
-        return genreRepository.save(input);
+    public GenreResponseDto createGenre(GenreRequestDto genreDto) {
+        GenreEntity genreEntity = genreDtoMapper.mapToEntity(genreDto);
+        genreEntity = genreRepository.save(genreEntity);
+        return genreDtoMapper.mapToDto(genreEntity);
+
     }
 
-    public GenreEntity updateGenre(Long id, GenreEntity input) {
+    public GenreResponseDto updateGenre(Long id, @Valid GenreRequestDto requestDto) {
         GenreEntity oldGenre = genreRepository.findById(id).orElse(null);
         if(oldGenre == null){
             return null;
         }
 
-        oldGenre.setName(input.getName());
-        oldGenre.setDescription(input.getDescription());
-        return genreRepository.save(oldGenre);
+        oldGenre.setName(requestDto.getName());
+        oldGenre.setDescription(requestDto.getDescription());
+        return genreDtoMapper.mapToDto(oldGenre);
     }
 
     public void deleteGenre(Long id){
@@ -55,7 +68,7 @@ public class GenreService {
         if(optionalGenreEntity.isPresent()){
             return optionalGenreEntity.get();
         } else {
-            return null;
+            throw new RecordNotFoundException("Genre " + id +" not found");
         }
     }
 }
