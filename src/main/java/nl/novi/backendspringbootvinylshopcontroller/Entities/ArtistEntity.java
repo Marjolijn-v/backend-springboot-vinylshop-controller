@@ -9,10 +9,8 @@ public class ArtistEntity extends BaseEntity{
     private String name;
     private String biography;
 
-    public ArtistEntity(String name, String biography) {
-        this.name = name;
-        this.biography = biography;
-    }
+
+
 
     public String getName() {
         return name;

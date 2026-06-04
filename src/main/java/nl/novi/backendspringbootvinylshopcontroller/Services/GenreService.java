@@ -58,7 +58,7 @@ public class GenreService {
         if(genreRepository.existsById(id)){
             genreRepository.deleteById(id);
         } else {
-            IO.println("Genre met id " + id + " kan niet verwijderd worden.");
+            IO.println("Genre with id " + id + " can't be removed.");
         }
 
     }
