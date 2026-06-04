@@ -1,11 +1,7 @@
-package nl.novi.backendspringbootvinylshopcontroller.Entities;
+package nl.novi.backendspringbootvinylshopcontroller.dtos.stock;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+public class StockRequestDto {
 
-@Entity
-@Table(name = "stock")
-public class StockEntity extends BaseEntity{
     private String condition;
     private double price;
 

@@ -30,7 +30,7 @@ public class ArtistService {
     }
 
     public ArtistResponseDto findArtistById(Long id) {
-        ArtistEntity artistEntity = artistRepository.findById(id).orElseThrow();
+        ArtistEntity artistEntity = artistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Artist " + id + " not found"));
 
         return artistDtoMapper.mapToDto(artistEntity);
     }

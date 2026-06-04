@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/genres")
-
 public class GenreController {
 
     private final GenreService genreService;
@@ -37,9 +36,6 @@ public class GenreController {
 
         return new ResponseEntity<>(genre, HttpStatus.OK);
     }
-
-
-
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
