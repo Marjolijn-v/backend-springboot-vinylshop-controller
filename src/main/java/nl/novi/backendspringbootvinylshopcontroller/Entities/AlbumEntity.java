@@ -19,6 +19,10 @@ public class AlbumEntity extends BaseEntity{
     @ManyToMany(mappedBy = "albums")
     private Set<ArtistEntity> artists = new HashSet<>();
 
+    @OneToOne
+    @JoinColumn(name = "genre_id")
+    private GenreEntity genreEntity;
+
     @Column(name = "title", nullable = false )
     private String title;
 
