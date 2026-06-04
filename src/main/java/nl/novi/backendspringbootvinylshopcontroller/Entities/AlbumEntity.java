@@ -13,7 +13,7 @@ public class AlbumEntity extends BaseEntity{
     @JoinColumn(name = "publisher_id")
     private PublisherEntity publisherEntity;
 
-    @OneToMany(mappedBy = "album")
+    @OneToMany(mappedBy = "albumEntity")
     private Set<StockEntity> stockItems = new HashSet<>();
 
     @ManyToMany(mappedBy = "albums")
