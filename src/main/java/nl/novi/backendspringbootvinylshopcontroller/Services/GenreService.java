@@ -31,7 +31,7 @@ public class GenreService {
     }
 
     public GenreResponseDto findGenreById(Long id) {
-       GenreEntity genreEntity = genreRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Genre not found"));
+       GenreEntity genreEntity = genreRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Genre " + id + " not found"));
 
         return genreDtoMapper.mapToDto(genreEntity);
     }
