@@ -13,8 +13,8 @@ VALUES (2, now(), now(), 'Jazz', 'Improvisatie en swingende ritmes uit New Orlea
 INSERT INTO albums (id, title, release_year, genre_id, publisher_id)
 VALUES (1, 'Abbey Road', 1969, 1, 1);
 
-INSERT INTO artists (id, name, biography, album_id)
-VALUES (1, 'The Beatles', 'The Beatles were an English rock band formed in Liverpool in 1960. The band comprised John Lennon, Paul McCartney, George Harrison and Ringo Starr.', 1);
+INSERT INTO artists (id, name, biography)
+VALUES (1, 'The Beatles', 'The Beatles were an English rock band formed in Liverpool in 1960. The band comprised John Lennon, Paul McCartney, George Harrison and Ringo Starr.');
 
-INSERT INTO stock (id, condtion, price, album_id)
+INSERT INTO stock (id, condition, price, album_id)
 VALUES (1, 'Very good', 19.95, 1);

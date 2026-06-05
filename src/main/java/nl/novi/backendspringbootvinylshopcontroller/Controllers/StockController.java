@@ -45,7 +45,7 @@ public class StockController {
         return  ResponseEntity.created(urlHelper.getCurrentUrlWithId(newStock.getId())).body(newStock);
     }
 
-    @PutMapping("/{stockId")
+    @PutMapping("/{stockId}")
     public ResponseEntity<StockResponseDto> updateStock(@PathVariable Long id, @RequestBody @Valid StockRequestDto stockDto) {
         StockResponseDto updateStock= stockService.updateStock(id, stockDto);
         return new ResponseEntity<>(updateStock, HttpStatus.OK);
