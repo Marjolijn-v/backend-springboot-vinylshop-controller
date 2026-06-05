@@ -15,6 +15,7 @@ public class ArtistDtoMapper implements DtoMapper<ArtistResponseDto, ArtistReque
     @Override
     public ArtistResponseDto mapToDto(ArtistEntity model){
         ArtistResponseDto result = new ArtistResponseDto();
+        result.setId(model.getId());
         result.setName(model.getName());
         result.setBiography(model.getBiography());
         return result;

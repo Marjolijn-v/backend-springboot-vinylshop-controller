@@ -36,6 +36,7 @@ public class AlbumController {
 
         return new ResponseEntity<>(album, HttpStatus.OK);
     }
+    
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
