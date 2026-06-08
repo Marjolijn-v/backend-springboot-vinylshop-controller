@@ -8,27 +8,47 @@ import java.util.Set;
 @Entity
 @Table(name = "albums")
 public class AlbumEntity extends BaseEntity{
-
-    @ManyToOne
-    @JoinColumn(name = "publisher_id")
-    private PublisherEntity publisherEntity;
-
-    @OneToMany(mappedBy = "albumEntity")
-    private Set<StockEntity> stockItems = new HashSet<>();
-
-    @ManyToMany(mappedBy = "albums")
-    private Set<ArtistEntity> artists = new HashSet<>();
-
-    @OneToOne
-    @JoinColumn(name = "genre_id")
-    private GenreEntity genreEntity;
-
     @Column(name = "title", nullable = false )
     private String title;
 
     @Column(name = "release_year")
     private int releaseYear;
 
+    @ManyToOne
+    @JoinColumn(name = "publisher_id")
+    private PublisherEntity publisher;
+
+    @OneToMany(mappedBy = "albumEntity")
+    private Set<StockEntity> stockItems = new HashSet<>();
+
+    @ManyToMany()
+    @JoinTable(
+            name = "album_artist",
+            joinColumns = @JoinColumn(name = "album_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    private Set<ArtistEntity> artists = new HashSet<>();
+
+
+    @OneToOne
+    @JoinColumn(name = "genre_id")
+    private GenreEntity genreEntity;
+
+    public PublisherEntity getPublisher(PublisherEntity publisherEntity) {
+        return publisher;
+    }
+
+    public void setPublisher(PublisherEntity publisher) {
+        this.publisher = publisher;
+    }
+
+    public GenreEntity getGenre(GenreEntity genreEntity) {
+        return genreEntity;
+    }
+
+    public void setGenre(GenreEntity genreEntity) {
+        this.genreEntity = genreEntity;
+    }
 
     public Set<ArtistEntity> getArtists() {
         return artists;
@@ -44,14 +64,6 @@ public class AlbumEntity extends BaseEntity{
 
     public void setStockItems(Set<StockEntity> stockItems) {
         this.stockItems = stockItems;
-    }
-
-    public PublisherEntity getPublisherEntity() {
-        return publisherEntity;
-    }
-
-    public void setPublisherEntity(PublisherEntity publisherEntity) {
-        this.publisherEntity = publisherEntity;
     }
 
     public String getTitle() {

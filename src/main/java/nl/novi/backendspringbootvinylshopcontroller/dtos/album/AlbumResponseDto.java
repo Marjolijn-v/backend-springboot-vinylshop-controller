@@ -2,28 +2,30 @@ package nl.novi.backendspringbootvinylshopcontroller.dtos.album;
 
 import nl.novi.backendspringbootvinylshopcontroller.Entities.GenreEntity;
 import nl.novi.backendspringbootvinylshopcontroller.Entities.PublisherEntity;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.genre.GenreResponseDto;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.publisher.PublisherResponseDto;
 
 public class AlbumResponseDto {
     private Long id;
     private String title;
     private int releaseYear;
-    private GenreEntity genreEntity;
-    private PublisherEntity publisherEntity;
+    private GenreResponseDto genre;
+    private PublisherResponseDto publisher;
 
-    public GenreEntity getGenreEntity() {
-        return genreEntity;
+    public GenreResponseDto getGenre() {
+        return genre;
     }
 
-    public void setGenreEntity(GenreEntity genreEntity) {
-        this.genreEntity = genreEntity;
+    public void setGenre(GenreResponseDto genre) {
+        this.genre = genre;
     }
 
-    public PublisherEntity getPublisherEntity() {
-        return publisherEntity;
+    public PublisherResponseDto getPublisher() {
+        return publisher;
     }
 
-    public void setPublisherEntity(PublisherEntity publisherEntity) {
-        this.publisherEntity = publisherEntity;
+    public void setPublisher(PublisherResponseDto publisher) {
+        this.publisher = publisher;
     }
 
     public Long getId() {

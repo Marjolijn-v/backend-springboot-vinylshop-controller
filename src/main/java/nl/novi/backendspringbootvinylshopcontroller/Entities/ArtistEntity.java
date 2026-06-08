@@ -9,20 +9,14 @@ import java.util.Set;
 @Table(name = "artists")
 public class ArtistEntity extends BaseEntity{
 
-    @ManyToMany
-    @JoinTable(
-            name = "artist_album",
-            joinColumns = @JoinColumn(name = "artist_id"),
-            inverseJoinColumns = @JoinColumn(name = "album_id")
-    )
-    private Set<AlbumEntity> albums = new HashSet<>();
-
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "biography")
     private String biography;
 
+    @ManyToMany(mappedBy = "artists")
+    private Set<AlbumEntity> albums = new HashSet<>();
 
     public Set<AlbumEntity> getAlbums() {
         return albums;

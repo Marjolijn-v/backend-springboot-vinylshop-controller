@@ -2,7 +2,9 @@ package nl.novi.backendspringbootvinylshopcontroller.Services;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import nl.novi.backendspringbootvinylshopcontroller.Entities.AlbumEntity;
 import nl.novi.backendspringbootvinylshopcontroller.Entities.GenreEntity;
+import nl.novi.backendspringbootvinylshopcontroller.Repositories.AlbumRepository;
 import nl.novi.backendspringbootvinylshopcontroller.Repositories.GenreRepository;
 import nl.novi.backendspringbootvinylshopcontroller.dtos.genre.GenreRequestDto;
 import nl.novi.backendspringbootvinylshopcontroller.dtos.genre.GenreResponseDto;
@@ -17,11 +19,13 @@ import java.util.Optional;
 public class GenreService {
 
     private final GenreRepository genreRepository;
+    private final AlbumRepository albumRepository;
     private final GenreDtoMapper genreDtoMapper;
 
 
-    public GenreService(GenreRepository genreRepository, GenreDtoMapper genreDtoMapper) {
+    public GenreService(GenreRepository genreRepository, AlbumRepository albumRepository, GenreDtoMapper genreDtoMapper) {
         this.genreRepository = genreRepository;
+        this.albumRepository = albumRepository;
         this.genreDtoMapper = genreDtoMapper;
     }
 
@@ -55,11 +59,11 @@ public class GenreService {
     }
 
     public void deleteGenre(Long id){
-        if(genreRepository.existsById(id)){
-            genreRepository.deleteById(id);
-        } else {
-            IO.println("Genre with id " + id + " can't be removed.");
+        for(AlbumEntity album : albumRepository.findByGenreEntity_Id(id)){
+            album.setGenre(null);
+            albumRepository.save(album);
         }
+        genreRepository.deleteById(id);
 
     }
 

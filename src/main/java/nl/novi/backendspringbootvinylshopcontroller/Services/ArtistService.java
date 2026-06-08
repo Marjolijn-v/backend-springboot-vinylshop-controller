@@ -71,4 +71,7 @@ public class ArtistService {
     }
 
 
+    public List<ArtistResponseDto> getArtistsForAlbum(Long albumId) {
+        return artistDtoMapper.mapToDto(artistRepository.findArtistsByAlbumsId(albumId));
+    }
 }

@@ -9,8 +9,8 @@ import java.util.Set;
 @Table(name = "publishers")
 public class PublisherEntity extends BaseEntity{
 
-    @OneToMany(mappedBy = "publisherEntity")
-    private Set<AlbumEntity> albums = new HashSet<>();
+    @OneToMany(mappedBy = "publisher")
+    private Set<AlbumEntity> albums;
 
     @Column(name = "name", nullable = false)
     private String name;
