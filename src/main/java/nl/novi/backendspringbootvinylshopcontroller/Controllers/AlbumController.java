@@ -1,0 +1,79 @@
+package nl.novi.backendspringbootvinylshopcontroller.Controllers;
+
+import jakarta.validation.Valid;
+import nl.novi.backendspringbootvinylshopcontroller.Services.AlbumService;
+import nl.novi.backendspringbootvinylshopcontroller.Services.ArtistService;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.album.AlbumExtendedResponseDto;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.album.AlbumRequestDto;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.album.AlbumResponseDto;
+import nl.novi.backendspringbootvinylshopcontroller.dtos.artist.ArtistResponseDto;
+import nl.novi.backendspringbootvinylshopcontroller.helpers.UrlHelper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/albums")
+public class AlbumController {
+
+    private final AlbumService albumService;
+    private final ArtistService artistService;
+    private final UrlHelper urlHelper;
+
+    public AlbumController(AlbumService albumService, ArtistService artistService, UrlHelper urlHelper) {
+        this.albumService = albumService;
+        this.artistService = artistService;
+        this.urlHelper = urlHelper;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AlbumResponseDto>> getAllAlbums(@RequestParam(required = false) Boolean stock) {
+        List<AlbumResponseDto> allAlbums;
+
+        if(stock != null) {
+            allAlbums = albumService.getAlbumsWithStock(stock);
+        } else {
+            allAlbums = albumService.findAllAlbums();
+        }
+
+        return new ResponseEntity<>(allAlbums, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AlbumExtendedResponseDto> getAlbumById(@PathVariable Long id) {
+        AlbumExtendedResponseDto album = albumService.findAlbumById(id);
+
+        return new ResponseEntity<>(album, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/artists")
+    public ResponseEntity<List<ArtistResponseDto>> linkArtist(@PathVariable Long id){
+        List<ArtistResponseDto> artists = artistService.getArtistsForAlbum(id);
+        return ResponseEntity.ok(artists);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AlbumResponseDto> createAlbum (@RequestBody @Valid AlbumRequestDto albumModel) {
+        AlbumResponseDto newAlbum = albumService.createAlbum(albumModel);
+
+        return ResponseEntity.created(urlHelper.getCurrentUrlWithId(newAlbum.getId())).body(newAlbum);
+
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<AlbumResponseDto> updateAlbum (@PathVariable Long id, @RequestBody @Valid AlbumRequestDto requestDto) {
+        AlbumResponseDto updatedAlbum = albumService.updateAlbum(id, requestDto);
+        return new ResponseEntity<>(updatedAlbum,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAlbum(@PathVariable Long id) {
+        albumService.deleteAlbum(id);
+    }
+
+
+}
